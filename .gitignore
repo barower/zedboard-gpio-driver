@@ -1,0 +1,6 @@
+*.ko*
+*swp*
+*mod*
+*.o
+*odule*
+*cmd*
