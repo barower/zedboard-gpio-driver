@@ -11,7 +11,7 @@
 int main()
 {
 
-  char receive;
+  char receive[50];
   printf("Probuje otworzyc urzadzenie!!!\n");
   fflush(stdout);
   int plik=open("/dev/my_dev0", O_RDWR);
@@ -24,7 +24,7 @@ int main()
   printf("Otworzylem urzadzenie!!!\n");
   fflush(stdout);
   read(plik,&receive,sizeof(receive));
-  printf("Odczytany znak to, UWAGA: %c\n",receive);
+  printf("Odczytana liczba to, UWAGA: %s\n",receive);
   /*
   while(1)
     {

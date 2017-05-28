@@ -19,6 +19,9 @@ MODULE_LICENSE("GPL");
 // Char bedacy posrednikiem miedzy user space a sterownikiem GPIO
 char mediate[BUF_SIZE];
 
+// Wartosc pokazywana na pinach GPIO
+long int gpio_val;
+
 // Rzeczy potrzebne dla rejestracji urzadzenia w systemie plikow
 dev_t my_dev=0;
 struct cdev *my_cdev = NULL;
@@ -30,8 +33,6 @@ ssize_t my_write(struct file *filp,
 {
   // Retcode
   int res;
-  // Wartosc pokazywana na pinach GPIO
-  long int gpio_val;
 
   /* Sprawdzamy, czy jest miejsce na urządzeniu */
   if (count == 0) return -ENOSPC;
@@ -54,7 +55,9 @@ ssize_t my_write(struct file *filp,
   	return -1;
   }
 
-  printk(KERN_INFO "Otrzymano liczbe %d", gpio_val);
+  //printk(KERN_INFO "Otrzymano liczbe %d", gpio_val);
+
+  // TODO: ZAPIS WARTOSCI DO POZYCJI W PAMIECI
 
   return count;
 }	
@@ -64,12 +67,12 @@ ssize_t my_read(struct file *filp,
 	char __user *buf,size_t count, loff_t *off)
 
 {
- //if ( (*off)+count >=  BUF_LEN) count = BUF_LEN-(*off);
   if (count == 0) return 0;
-  // Przesylamy tylko jeden znak
-  count = 1;
+
+  sprintf(mediate,"%d\n",gpio_val);
+
   __copy_to_user(buf,mediate,count);
-  (*off) += count;
+
   return count;
 }	
 
