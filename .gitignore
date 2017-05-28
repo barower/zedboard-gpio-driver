@@ -4,3 +4,7 @@
 *.o
 *odule*
 *cmd*
+hello.ko
+hello.mod.c
+hello.moc.o
+hello.o
