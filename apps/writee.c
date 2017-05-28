@@ -8,7 +8,7 @@
 #include<string.h>
 #include<time.h>
 
-char send = 'a';
+char num_to_send[50] = "69";
 
 int main()
 {
@@ -21,9 +21,14 @@ int main()
       fflush(stdout);
       exit(1);
     }
-  printf("Otworzylem urzadzenie!!!\n");
+
+//  printf("Otworzylem urzadzenie!!!\n");
+//  fflush(stdout);
+
+  write(plik,num_to_send,sizeof(num_to_send));
+
+  printf("Wyslalem liczbe %s\n", num_to_send);
   fflush(stdout);
-  write(plik,&send,sizeof(send));
   /*
   while(1)
     {

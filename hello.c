@@ -14,9 +14,10 @@ MODULE_LICENSE("GPL");
 
 #define SUCCESS 0
 #define DEVICE_NAME "giepeio"
+#define BUF_SIZE 50
 
-// Char bedacy posrednikiem miedzy user space a gpio
-char mediate[2];
+// Char bedacy posrednikiem miedzy user space a sterownikiem GPIO
+char mediate[BUF_SIZE];
 
 // Rzeczy potrzebne dla rejestracji urzadzenia w systemie plikow
 dev_t my_dev=0;
@@ -27,16 +28,34 @@ static struct class *my_class = NULL;
 ssize_t my_write(struct file *filp,
 	const char __user *buf,size_t count, loff_t *off)
 {
+  // Retcode
+  int res;
+  // Wartosc pokazywana na pinach GPIO
+  long int gpio_val;
+
   /* Sprawdzamy, czy jest miejsce na urządzeniu */
-	// TODO DO ZMIANY, TUTAJ WPISUJEMY TYLKO WARTOSC GPIO
-  count = 1; // Wysylamy tylko jeden znak
-  //if ( (*off)+count >=  BUF_LEN) count = BUF_LEN-(*off);
   if (count == 0) return -ENOSPC;
 
   // Tak, ale trzeba to zapisac do pamieci teraz
   __copy_from_user(mediate,buf,count);
 
-  (*off) += count;
+  // Zamiana na wartosc int
+  res = kstrtol(mediate, 10, &gpio_val);
+  if(res != 0){
+  	if(res == -ERANGE){
+  		printk(KERN_ALERT "Write overflow!\n");
+  		return -EOVERFLOW;
+  	}
+  	if(res == -EINVAL){
+  		printk(KERN_ALERT "Incorrect input!\n");
+  		return -EINVAL;
+  	}
+  	// Nie wiadomo jaki blad
+  	return -1;
+  }
+
+  printk(KERN_INFO "Otrzymano liczbe %d", gpio_val);
+
   return count;
 }	
 

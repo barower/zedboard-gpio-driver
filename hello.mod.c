@@ -27,8 +27,14 @@ __attribute__((section("__versions"))) = {
 	{ 0x7485e15e, __VMLINUX_SYMBOL_STR(unregister_chrdev_region) },
 	{ 0xf080f8e0, __VMLINUX_SYMBOL_STR(cdev_del) },
 	{ 0xe2b4edad, __VMLINUX_SYMBOL_STR(device_destroy) },
-	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0x1226bdb6, __VMLINUX_SYMBOL_STR(ex_handler_default) },
+	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
+	{ 0xdb7305a1, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
+	{ 0x1b17e06c, __VMLINUX_SYMBOL_STR(kstrtoll) },
+	{ 0x60b40fd8, __VMLINUX_SYMBOL_STR(copy_user_enhanced_fast_string) },
+	{ 0xe5772d4a, __VMLINUX_SYMBOL_STR(copy_user_generic_string) },
+	{ 0xdcc3a419, __VMLINUX_SYMBOL_STR(copy_user_generic_unrolled) },
+	{ 0x88db9f48, __VMLINUX_SYMBOL_STR(__check_object_size) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
 };
 
