@@ -10,8 +10,7 @@
 
 char num_to_send[50] = "69";
 
-int main()
-{
+int main(int argc, char *argv[]){
   printf("Probuje otworzyc urzadzenie!!!\n");
   fflush(stdout);
   int plik=open("/dev/my_dev0", O_RDWR);
@@ -24,6 +23,10 @@ int main()
 
   printf("Otworzylem urzadzenie!!!\n");
   fflush(stdout);
+
+  if(argc == 2){
+    strcpy(num_to_send,argv[1]);
+  }
 
   write(plik,num_to_send,sizeof(num_to_send));
 

@@ -55,7 +55,8 @@ ssize_t my_write(struct file *filp,
   	return -1;
   }
 
-  //printk(KERN_INFO "Otrzymano liczbe %d", gpio_val);
+  
+  printk(KERN_INFO "Otrzymano liczbe %d", gpio_val);
 
   // TODO: ZAPIS WARTOSCI DO POZYCJI W PAMIECI
 
