@@ -20,7 +20,7 @@ MODULE_LICENSE("GPL");
 char mediate[BUF_SIZE];
 
 // Wartosc pokazywana na pinach GPIO
-long int gpio_val;
+unsigned char gpio_val;
 
 // Rzeczy potrzebne dla rejestracji urzadzenia w systemie plikow
 dev_t my_dev=0;
@@ -32,7 +32,7 @@ ssize_t my_write(struct file *filp,
 	const char __user *buf,size_t count, loff_t *off)
 {
   // Retcode
-  int res;
+  int res, gpio_temp;
 
   /* Sprawdzamy, czy jest miejsce na urządzeniu */
   if (count == 0) return -ENOSPC;
@@ -41,7 +41,7 @@ ssize_t my_write(struct file *filp,
   __copy_from_user(mediate,buf,count);
 
   // Zamiana na wartosc int
-  res = kstrtol(mediate, 10, &gpio_val);
+  res = kstrtoint(mediate, 10, &gpio_temp);
   if(res != 0){
   	if(res == -ERANGE){
   		printk(KERN_ALERT "Write overflow!\n");
@@ -55,8 +55,16 @@ ssize_t my_write(struct file *filp,
   	return -1;
   }
 
+  // Sprawdzenie przekroczenia maksymalnej wartosci
+  if(gpio_temp < 0 || gpio_temp > 255){
+	printk(KERN_ALERT "Incorrect value!\n");
+	return -EINVAL;
+  }
+
+  // Przerzutowanie
+  gpio_val = (unsigned char)gpio_temp;
   
-  printk(KERN_INFO "Otrzymano liczbe %d", gpio_val);
+  printk(KERN_INFO "Otrzymano liczbe %c", gpio_val);
 
   // TODO: ZAPIS WARTOSCI DO POZYCJI W PAMIECI
 
@@ -70,7 +78,7 @@ ssize_t my_read(struct file *filp,
 {
   if (count == 0) return 0;
 
-  sprintf(mediate,"%d\n",gpio_val);
+  sprintf(mediate,"%d\n",(int)gpio_val);
 
   __copy_to_user(buf,mediate,count);
 
