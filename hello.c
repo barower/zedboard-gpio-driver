@@ -2,15 +2,18 @@
  *  hello-2.c - Demonstrating the module_init() and module_exit() macros.
  *  This is preferred over using init_module() and cleanup_module().
  */
-#include <linux/module.h>	/* Needed by all modules */
-#include <linux/kernel.h>	/* Needed for KERN_INFO */
-#include <linux/init.h>		/* Needed for the macros */
-#include <linux/cdev.h>
+
+#include <linux/kernel.h>   
+#include <linux/module.h>
+#include <asm/uaccess.h>
+MODULE_LICENSE("GPL");
+/* Zbiory nag³ówkowe dla urz±dzeñ znakowych */
 #include <linux/device.h>
 #include <linux/fs.h>
-#include <asm/uaccess.h>
-
-MODULE_LICENSE("GPL");
+#include <linux/cdev.h>
+#include <linux/mm.h>
+#include <asm/io.h>
+#include <asm/uaccess.h>  /* for put_user */
 
 #define SUCCESS 0
 #define DEVICE_NAME "giepeio"
@@ -21,6 +24,9 @@ char mediate[BUF_SIZE];
 
 // Wartosc pokazywana na pinach GPIO
 unsigned char gpio_val;
+
+// Wartosc GPIO przemapowana w pamieci na odpowiedni adres (0x41200000)
+unsigned char *fmem;
 
 // Rzeczy potrzebne dla rejestracji urzadzenia w systemie plikow
 dev_t my_dev=0;
@@ -67,6 +73,9 @@ ssize_t my_write(struct file *filp,
   printk(KERN_INFO "Otrzymano liczbe %c", gpio_val);
 
   // TODO: ZAPIS WARTOSCI DO POZYCJI W PAMIECI
+  *fmem = gpio_val;
+
+  printk(KERN_INFO "W pamieci zapisana jest wartosc %c\n", *fmem);
 
   return count;
 }	
@@ -122,6 +131,10 @@ static void __exit hello_exit(void)
 	// Zwalniamy numer urzadzenia
 	unregister_chrdev_region(my_dev, 1);
 
+	if(fmem) {
+		iounmap(fmem);
+	}
+
 	// Wyrejestrowujemy klase
 	if(my_class){
 		class_destroy(my_class);
@@ -129,7 +142,6 @@ static void __exit hello_exit(void)
 	}
 }
 
-// TODO inicjalizacja adresu w pamieci na gpio
 static int __init hello_init(void)
 {
 	int res;
@@ -167,6 +179,8 @@ static int __init hello_init(void)
 		printk(KERN_ERR "Registration of the device number for %s failed\n", DEVICE_NAME);
 		goto err1;
 	}
+
+	fmem = ioremap(0x41200000, sizeof(unsigned char));
 	
 	// Tworzymy nasze urzadzenie
 	device_create(my_class, NULL, my_dev, NULL, "my_dev%d", MINOR(my_dev));

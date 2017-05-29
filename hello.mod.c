@@ -19,11 +19,13 @@ __used
 __attribute__((section("__versions"))) = {
 	{ 0x21fac097, __VMLINUX_SYMBOL_STR(module_layout) },
 	{ 0x6238cb4f, __VMLINUX_SYMBOL_STR(device_create) },
+	{ 0x42c8de35, __VMLINUX_SYMBOL_STR(ioremap_nocache) },
 	{ 0xb7174bf0, __VMLINUX_SYMBOL_STR(cdev_add) },
 	{ 0x71ecf5d6, __VMLINUX_SYMBOL_STR(cdev_alloc) },
 	{ 0x29537c9e, __VMLINUX_SYMBOL_STR(alloc_chrdev_region) },
 	{ 0x790f2290, __VMLINUX_SYMBOL_STR(__class_create) },
 	{ 0x5c5a0946, __VMLINUX_SYMBOL_STR(class_destroy) },
+	{ 0xedc03953, __VMLINUX_SYMBOL_STR(iounmap) },
 	{ 0x7485e15e, __VMLINUX_SYMBOL_STR(unregister_chrdev_region) },
 	{ 0xf080f8e0, __VMLINUX_SYMBOL_STR(cdev_del) },
 	{ 0xe2b4edad, __VMLINUX_SYMBOL_STR(device_destroy) },
